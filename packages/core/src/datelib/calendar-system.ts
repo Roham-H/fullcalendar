@@ -15,7 +15,7 @@ export function registerCalendarSystem(name, theClass) {
 }
 
 export function createCalendarSystem(name) {
-  return new calendarSystemClassMap[name]()
+  return new (calendarSystemClassMap[name] || GregorianCalendarSystem)()
 }
 
 class GregorianCalendarSystem implements CalendarSystem {
@@ -40,4 +40,29 @@ class GregorianCalendarSystem implements CalendarSystem {
   }
 }
 
+// class JalaliCalendarSystem implements CalendarSystem {
+//   getMarkerYear(d: DateMarker) {
+//     return d.getUTCFullYear()
+//   }
+//
+//   getMarkerMonth(d: DateMarker) {
+//     d = new PersianDate(d)
+//     return d.getUTCMonth()
+//   }
+//
+//   getMarkerDay(d: DateMarker) {
+//     d = new PersianDate(d)
+//     return d.getUTCDate()
+//   }
+//
+//   arrayToMarker(arr) {
+//     return arrayToUtcDate(arr)
+//   }
+//
+//   markerToArray(marker) {
+//     return dateToUtcArray(marker)
+//   }
+// }
+
 registerCalendarSystem('gregory', GregorianCalendarSystem)
+registerCalendarSystem('jalali', GregorianCalendarSystem)

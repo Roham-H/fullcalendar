@@ -111,6 +111,7 @@ export const BASE_OPTION_REFINERS = {
   endParam: String,
   timeZoneParam: String,
   timeZone: String,
+  calendarSystem: String,
   locales: identity as Identity<LocaleInput[]>,
   locale: identity as Identity<LocaleSingularArg>,
   themeSystem: String as Identity<'standard' | string>,
@@ -382,6 +383,7 @@ export type CalendarOptionsRefined =
   BaseOptionsRefined &
   CalendarListenersLoose &
   RefinedOptionsFromRefiners<Required<CalendarOptionRefiners>> // Required hack
+
 
 export const COMPLEX_OPTION_COMPARATORS: {
   [optionName in keyof CalendarOptions]: (a: CalendarOptions[optionName], b: CalendarOptions[optionName]) => boolean

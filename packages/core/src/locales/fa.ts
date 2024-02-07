@@ -22,5 +22,5 @@ export default {
   moreLinkText(n) {
     return 'بیش از ' + n
   },
-  noEventsText: 'هیچ رویدادی به نمایش',
+  noEventsText: 'هیچ رویدادی برای نمایش وجود ندارد',
 } as LocaleInput

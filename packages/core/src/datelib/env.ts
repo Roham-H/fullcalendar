@@ -169,14 +169,32 @@ export class DateEnv {
 
   add(marker: DateMarker, dur: Duration): DateMarker {
     let a = this.calendarSystem.markerToArray(marker)
+
     a[0] += dur.years
     a[1] += dur.months
     a[2] += dur.days
     a[6] += dur.milliseconds
-    return this.calendarSystem.arrayToMarker(a)
+
+    const newDate = this.calendarSystem.arrayToMarker(a)
+    // const markerMonth = +Intl.DateTimeFormat(
+    //   `${this.locale.codeArg}-u-nu-latn`,
+    //   {month: 'numeric'}
+    // ).format(marker)
+    // const newDateMonth = +Intl.DateTimeFormat(
+    //   `${this.locale.codeArg}-u-nu-latn`,
+    //   {month: 'numeric'}
+    // ).format(newDate)
+    // if (markerMonth !== newDateMonth) {
+    //   const diff = +Intl.DateTimeFormat(
+    //     `${this.locale.codeArg}-u-nu-latn`,
+    //     { day: 'numeric' }
+    //   ).format(newDate)
+    //   newDate.setDate(newDate.getDate() - diff + 1)
+    // }
+    return newDate
   }
 
-  subtract(marker: DateMarker, dur: Duration): DateMarker {
+  subtract (marker: DateMarker, dur: Duration): DateMarker {
     let a = this.calendarSystem.markerToArray(marker)
     a[0] -= dur.years
     a[1] -= dur.months
@@ -185,13 +203,13 @@ export class DateEnv {
     return this.calendarSystem.arrayToMarker(a)
   }
 
-  addYears(marker: DateMarker, n: number) {
+  addYears (marker: DateMarker, n: number) {
     let a = this.calendarSystem.markerToArray(marker)
     a[0] += n
     return this.calendarSystem.arrayToMarker(a)
   }
 
-  addMonths(marker: DateMarker, n: number) {
+  addMonths (marker: DateMarker, n: number) {
     let a = this.calendarSystem.markerToArray(marker)
     a[1] += n
     return this.calendarSystem.arrayToMarker(a)
@@ -199,7 +217,7 @@ export class DateEnv {
 
   // Diffing Whole Units
 
-  diffWholeYears(m0: DateMarker, m1: DateMarker): number {
+  diffWholeYears (m0: DateMarker, m1: DateMarker): number {
     let { calendarSystem } = this
 
     if (
@@ -212,7 +230,7 @@ export class DateEnv {
     return null
   }
 
-  diffWholeMonths(m0: DateMarker, m1: DateMarker): number {
+  diffWholeMonths (m0: DateMarker, m1: DateMarker): number {
     let { calendarSystem } = this
 
     if (
@@ -220,14 +238,14 @@ export class DateEnv {
       calendarSystem.getMarkerDay(m0) === calendarSystem.getMarkerDay(m1)
     ) {
       return (calendarSystem.getMarkerMonth(m1) - calendarSystem.getMarkerMonth(m0)) +
-          (calendarSystem.getMarkerYear(m1) - calendarSystem.getMarkerYear(m0)) * 12
+        (calendarSystem.getMarkerYear(m1) - calendarSystem.getMarkerYear(m0)) * 12
     }
     return null
   }
 
   // Range / Duration
 
-  greatestWholeUnit(m0: DateMarker, m1: DateMarker) {
+  greatestWholeUnit (m0: DateMarker, m1: DateMarker) {
     let n = this.diffWholeYears(m0, m1)
 
     if (n !== null) {
@@ -273,7 +291,7 @@ export class DateEnv {
     return { unit: 'millisecond', value: m1.valueOf() - m0.valueOf() }
   }
 
-  countDurationsBetween(m0: DateMarker, m1: DateMarker, d: Duration) {
+  countDurationsBetween (m0: DateMarker, m1: DateMarker, d: Duration) {
     // TODO: can use greatestWholeUnit
     let diff
 
@@ -304,7 +322,7 @@ export class DateEnv {
   // Start-Of
   // these DON'T return zoned-dates. only UTC start-of dates
 
-  startOf(m: DateMarker, unit: string) {
+  startOf (m: DateMarker, unit: string) {
     if (unit === 'year') {
       return this.startOfYear(m)
     }
@@ -329,20 +347,29 @@ export class DateEnv {
     return null
   }
 
-  startOfYear(m: DateMarker): DateMarker {
+  startOfYear (m: DateMarker): DateMarker {
     return this.calendarSystem.arrayToMarker([
       this.calendarSystem.getMarkerYear(m),
     ])
   }
 
-  startOfMonth(m: DateMarker): DateMarker {
-    return this.calendarSystem.arrayToMarker([
+  startOfMonth (m: DateMarker): DateMarker {
+    const d = this.calendarSystem.arrayToMarker([
       this.calendarSystem.getMarkerYear(m),
       this.calendarSystem.getMarkerMonth(m),
     ])
+    const localeOffset = +Intl.DateTimeFormat(
+      `${this.locale.codeArg}-u-nu-latn`,
+      { day: 'numeric' }
+    ).format(d) - 1
+
+    console.log('got', d, d.toLocaleDateString(this.locale.codeArg), localeOffset);
+    d.setDate(d.getDate() - localeOffset)
+    console.log('ret', d, d.toLocaleDateString(this.locale.codeArg));
+    return d
   }
 
-  startOfWeek(m: DateMarker): DateMarker {
+  startOfWeek (m: DateMarker): DateMarker {
     return this.calendarSystem.arrayToMarker([
       this.calendarSystem.getMarkerYear(m),
       this.calendarSystem.getMarkerMonth(m),
@@ -352,7 +379,7 @@ export class DateEnv {
 
   // Week Number
 
-  computeWeekNumber(marker: DateMarker): number {
+  computeWeekNumber (marker: DateMarker): number {
     if (this.weekNumberFunc) {
       return this.weekNumberFunc(this.toDate(marker))
     }
@@ -360,7 +387,7 @@ export class DateEnv {
   }
 
   // TODO: choke on timeZoneName: long
-  format(marker: DateMarker, formatter: DateFormatter, dateOptions: { forcedTzo?: number } = {}) {
+  format (marker: DateMarker, formatter: DateFormatter, dateOptions: { forcedTzo?: number } = {}) {
     return formatter.format(
       {
         marker,
@@ -372,7 +399,7 @@ export class DateEnv {
     )
   }
 
-  formatRange(
+  formatRange (
     start: DateMarker,
     end: DateMarker,
     formatter: DateFormatter,
@@ -404,7 +431,7 @@ export class DateEnv {
   DUMB: the omitTime arg is dumb. if we omit the time, we want to omit the timezone offset. and if we do that,
   might as well use buildIsoString or some other util directly
   */
-  formatIso(marker: DateMarker, extraOptions: any = {}) {
+  formatIso (marker: DateMarker, extraOptions: any = {}) {
     let timeZoneOffset = null
 
     if (!extraOptions.omitTimeZoneOffset) {
@@ -420,7 +447,7 @@ export class DateEnv {
 
   // TimeZone
 
-  timestampToMarker(ms: number) {
+  timestampToMarker (ms: number) {
     if (this.timeZone === 'local') {
       return arrayToUtcDate(dateToLocalArray(new Date(ms)))
     } if (this.timeZone === 'UTC' || !this.namedTimeZoneImpl) {
@@ -429,7 +456,7 @@ export class DateEnv {
     return arrayToUtcDate(this.namedTimeZoneImpl.timestampToArray(ms))
   }
 
-  offsetForMarker(m: DateMarker) {
+  offsetForMarker (m: DateMarker) {
     if (this.timeZone === 'local') {
       return -arrayToLocalDate(dateToUtcArray(m)).getTimezoneOffset() // convert "inverse" offset to "normal" offset
     } if (this.timeZone === 'UTC') {
@@ -442,7 +469,7 @@ export class DateEnv {
 
   // Conversion
 
-  toDate(m: DateMarker, forcedTzo?: number): Date {
+  toDate (m: DateMarker, forcedTzo?: number): Date {
     if (this.timeZone === 'local') {
       return arrayToLocalDate(dateToUtcArray(m))
     }
@@ -457,7 +484,7 @@ export class DateEnv {
 
     return new Date(
       m.valueOf() -
-        this.namedTimeZoneImpl.offsetForArray(dateToUtcArray(m)) * 1000 * 60, // convert minutes -> ms
+      this.namedTimeZoneImpl.offsetForArray(dateToUtcArray(m)) * 1000 * 60, // convert minutes -> ms
     )
   }
 }

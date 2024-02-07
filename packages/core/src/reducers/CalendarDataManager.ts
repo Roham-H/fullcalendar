@@ -381,6 +381,7 @@ export class CalendarDataManager {
     let dateEnv = this.buildDateEnv(
       refinedOptions.timeZone,
       refinedOptions.locale,
+      refinedOptions.calendarSystem,
       refinedOptions.weekNumberCalculation,
       refinedOptions.firstDay,
       refinedOptions.weekText,
@@ -423,6 +424,7 @@ export class CalendarDataManager {
       ...pluginHooks.listenerRefiners,
       ...pluginHooks.optionRefiners,
     }
+
     let extra = {}
 
     let raw = mergeRawOptions([
@@ -518,6 +520,9 @@ export class CalendarDataManager {
       visibleRangeInput: refinedOptions.visibleRange,
       fixedWeekCount: refinedOptions.fixedWeekCount,
     })
+    console.log('dateProfileGenerator');
+    console.log(dateProfileGenerator);
+
 
     let viewApi = this.buildViewApi(viewType, this.getCurrentData, optionsData.dateEnv)
 
@@ -595,6 +600,7 @@ export class CalendarDataManager {
 function buildDateEnv(
   timeZone: string,
   explicitLocale: LocaleSingularArg,
+  calendarSystem = 'gregory',
   weekNumberCalculation,
   firstDay: number | undefined,
   weekText,
@@ -605,7 +611,7 @@ function buildDateEnv(
   let locale = buildLocale(explicitLocale || availableLocaleData.defaultCode, availableLocaleData.map)
 
   return new DateEnv({
-    calendarSystem: 'gregory', // TODO: make this a setting
+    calendarSystem,
     timeZone,
     namedTimeZoneImpl: pluginHooks.namedTimeZonedImpl,
     locale,
