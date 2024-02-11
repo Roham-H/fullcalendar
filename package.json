@@ -23,7 +23,11 @@
   },
   "copyright": "2023 Adam Shaw",
   "devDependencies": {
-    "@fullcalendar/standard-scripts": "*"
+    "@fullcalendar/standard-scripts": "*",
+    "@typescript-eslint/eslint-plugin": "^6.21.0",
+    "@typescript-eslint/parser": "^6.21.0",
+    "eslint": "^8.56.0",
+    "eslint-plugin-react": "^7.33.2"
   },
   "scripts": {
     "postinstall": "standard-scripts postinstall",

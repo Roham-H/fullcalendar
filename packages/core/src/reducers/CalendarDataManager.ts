@@ -520,9 +520,6 @@ export class CalendarDataManager {
       visibleRangeInput: refinedOptions.visibleRange,
       fixedWeekCount: refinedOptions.fixedWeekCount,
     })
-    console.log('dateProfileGenerator');
-    console.log(dateProfileGenerator);
-
 
     let viewApi = this.buildViewApi(viewType, this.getCurrentData, optionsData.dateEnv)
 
