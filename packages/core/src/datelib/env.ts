@@ -176,21 +176,6 @@ export class DateEnv {
     a[6] += dur.milliseconds
 
     const newDate = this.calendarSystem.arrayToMarker(a)
-    // const markerMonth = +Intl.DateTimeFormat(
-    //   `${this.locale.codeArg}-u-nu-latn`,
-    //   {month: 'numeric'}
-    // ).format(marker)
-    // const newDateMonth = +Intl.DateTimeFormat(
-    //   `${this.locale.codeArg}-u-nu-latn`,
-    //   {month: 'numeric'}
-    // ).format(newDate)
-    // if (markerMonth !== newDateMonth) {
-    //   const diff = +Intl.DateTimeFormat(
-    //     `${this.locale.codeArg}-u-nu-latn`,
-    //     { day: 'numeric' }
-    //   ).format(newDate)
-    //   newDate.setDate(newDate.getDate() - diff + 1)
-    // }
     return newDate
   }
 
@@ -354,26 +339,18 @@ export class DateEnv {
   }
 
   startOfMonth (m: DateMarker): DateMarker {
-    const d = this.calendarSystem.arrayToMarker([
+    return this.calendarSystem.arrayToMarker([
       this.calendarSystem.getMarkerYear(m),
       this.calendarSystem.getMarkerMonth(m),
     ])
-    const localeOffset = +Intl.DateTimeFormat(
-      `${this.locale.codeArg}-u-nu-latn`,
-      { day: 'numeric' }
-    ).format(d) - 1
-
-    console.log('got', d, d.toLocaleDateString(this.locale.codeArg), localeOffset);
-    d.setDate(d.getDate() - localeOffset)
-    console.log('ret', d, d.toLocaleDateString(this.locale.codeArg));
-    return d
   }
 
   startOfWeek (m: DateMarker): DateMarker {
     return this.calendarSystem.arrayToMarker([
       this.calendarSystem.getMarkerYear(m),
       this.calendarSystem.getMarkerMonth(m),
-      m.getUTCDate() - ((m.getUTCDay() - this.weekDow + 7) % 7),
+      this.calendarSystem.getMarkerDay(m) -
+        ((this.calendarSystem.getMarkerDayOfWeek(m) - this.weekDow + 7) % 7),
     ])
   }
 
