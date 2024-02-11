@@ -35,14 +35,9 @@ export class DayTableModel {
 
     if (breakOnWeeks) {
       // count columns until the day-of-week repeats
-      firstDay = new Date(Intl.DateTimeFormat('en-CA').format(dates[0])).getUTCDay()
-      console.log({firstDay});
-
+      firstDay = dates[0].getUTCDay()
       for (daysPerRow = 1; daysPerRow < dates.length; daysPerRow += 1) {
-        const dayOfWeek =
-          new Date(Intl.DateTimeFormat('en-CA').format(dates[daysPerRow]))
-            .getUTCDay()
-        if (dayOfWeek === firstDay) {
+        if (dates[daysPerRow].getUTCDay() === firstDay) {
           break
         }
       }
@@ -59,17 +54,16 @@ export class DayTableModel {
     this.headerDates = this.buildHeaderDates()
   }
 
-  private buildCells () {
+  private buildCells() {
     let rows = []
 
     for (let row = 0; row < this.rowCnt; row += 1) {
       let cells = []
 
       for (let col = 0; col < this.colCnt; col += 1) {
-        const builtCell = this.buildCell(row, col)
-        if (!builtCell) break
-
-        cells.push(builtCell)
+        cells.push(
+          this.buildCell(row, col),
+        )
       }
 
       rows.push(cells)
@@ -78,17 +72,15 @@ export class DayTableModel {
     return rows
   }
 
-  private buildCell (row, col): DayTableCell {
+  private buildCell(row, col): DayTableCell {
     let date = this.daySeries.dates[row * this.colCnt + col]
-    if (!date) return
-
     return {
       key: date.toISOString(),
       date,
     }
   }
 
-  private buildHeaderDates () {
+  private buildHeaderDates() {
     let dates = []
 
     for (let col = 0; col < this.colCnt; col += 1) {
@@ -98,7 +90,7 @@ export class DayTableModel {
     return dates
   }
 
-  sliceRange (range: DateRange): DayTableSeg[] {
+  sliceRange(range: DateRange): DayTableSeg[] {
     let { colCnt } = this
     let seriesSeg = this.daySeries.sliceRange(range)
     let segs: DayTableSeg[] = []

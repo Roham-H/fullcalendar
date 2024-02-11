@@ -71,7 +71,11 @@ class JalaliCalendarSystem implements CalendarSystem {
     if (arr.length === 1)
       arr = arr.concat([0])
     arr[1] += 1
-    return moment(arr, 'jYYYYjMjDHms').toDate()
+    let d = moment(arr, 'jYYYYjMjDHms')
+    if (arr[2] < 0) {
+      d.subtract(2 * -arr[2], 'day')
+    }
+    return d.toDate()
   }
 
   markerToArray(marker) {
