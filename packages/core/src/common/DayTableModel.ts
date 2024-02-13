@@ -61,9 +61,8 @@ export class DayTableModel {
       let cells = []
 
       for (let col = 0; col < this.colCnt; col += 1) {
-        cells.push(
-          this.buildCell(row, col),
-        )
+        const date = this.buildCell(row, col)
+        if (date) cells.push(date)
       }
 
       rows.push(cells)
@@ -74,6 +73,7 @@ export class DayTableModel {
 
   private buildCell(row, col): DayTableCell {
     let date = this.daySeries.dates[row * this.colCnt + col]
+    if (!date) return
     return {
       key: date.toISOString(),
       date,
