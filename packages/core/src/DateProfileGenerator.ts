@@ -293,6 +293,14 @@ export class DateProfileGenerator { // only publicly used for isHiddenDay :(
       computeRes()
     }
 
+    // FIXME: This is done so start would go through
+    // moment(arrStr, 'jYYYYjMMjDDHHmmssSS').utc(true) in jalaali system and local time would be kept
+    res.start = dateEnv.add(start, {
+      milliseconds: 0,
+      years: 0,
+      months: 0,
+      days: 0,
+    })
     return res
   }
 
