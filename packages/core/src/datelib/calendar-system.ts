@@ -50,38 +50,51 @@ class JalaliCalendarSystem implements CalendarSystem {
   getMarkerYear(d: DateMarker) {
     const year = d.getUTCFullYear()
     if (year < 1500) return year
-    return moment(d).utcOffset(0, true).jYear()
+    return moment(d).jYear()
   }
 
   getMarkerMonth(d: DateMarker) {
-    return moment(d).utcOffset(0, true).jMonth()
+    return moment(d).jMonth()
   }
 
   getMarkerDay(d: DateMarker) {
-    return moment(d).utcOffset(0, true).jDate()
+    return moment(d).jDate()
   }
 
   getMarkerDayOfWeek(d: DateMarker) {
-    return moment(d).utcOffset(0, true).day()
+    return moment(d).day()
   }
 
   arrayToMarker(arr: number[]) {
-    const [year] = arr
-    if (year > 1500) return arrayToUtcDate(arr)
     if (arr.length === 1)
       arr = arr.concat([0])
     arr[1] += 1
-    let d = moment(arr, 'jYYYYjMMjDDHmmss')//.utcOffset(0, true)
+
+    const arrStr = arr.map(t => {
+      if (t < 0)
+        return '01'
+      if (t.toString().length > 2)
+        return t.toString()
+      else
+        return ['0'].concat(t.toString().split('')).slice(-2).join('')
+    }).join('')
+
+    let d = moment(arrStr, 'jYYYYjMMjDDHHmmssSS').utc(true)
     if (arr[2] < 0) {
-      d.subtract(2 * -arr[2], 'day')
+      d.subtract(-arr[2] + 1, 'day')
     }
+    if (d.format('jMMjDD') === '1130')
+      console.log({
+        arr: arr.toString(),
+        d: d.format(),
+      })
+
     const date = d.toDate()
-    date.setUTCHours(24, 0, 0, 0)
     return date
   }
 
   markerToArray(marker) {
-    const m = moment(marker).utcOffset(0, true)
+    const m = moment(marker)//.utc(false)
     return ['jYear', 'jMonth', 'jDate', 'hour', 'minute', 'second', 'millisecond']
       .map(t => m[t]())
   }
